@@ -1,0 +1,78 @@
+# Grafic
+#include <iostream>
+#include <fstream>
+#include <cstring>
+#include <graphics.h>
+
+using namespace std;
+
+struct punct
+{
+    int x, y;
+};
+
+void scalare(double lungime, double inaltime, double Sx, double Sy);
+void desenGrafic(double lungime, double inaltime);
+
+int main()
+{
+    double scaleX=1.1;
+    double scaleY=1.1;
+    double inaltime, lungime;
+    printf("Introduceti dimensiunile cadranului:\n");
+    printf("Lungime = ");
+    cin>>lungime;
+    printf("Inaltime = ");
+    cin>>inaltime;
+    initwindow(lungime, inaltime);
+    desenGrafic(inaltime, lungime);
+    scalare(lungime, inaltime, scaleX, scaleY);
+
+
+    /*while(!ismouseclick(WM_LBUTTONDOWN))
+        k++;
+    getmouseclick(WM_LBUTTONDOWN, x, y);
+    cout<<x<<" "<<y;*/
+
+    getch();
+    closegraph();
+}
+void scalare(double lungime, double inaltime, double Sx, double Sy)
+{
+    if(getch() == 27)
+        return;
+    if(getch() == 'q')
+    {
+        cleardevice();
+        //initwindow(lungime, inaltime);
+        desenGrafic(lungime * Sx, inaltime * Sy);
+        scalare(lungime * Sx, inaltime * Sy, Sx, Sy);
+    }
+    if(getch() ==  'e')
+    {
+        cleardevice();
+        //initwindow(lungime, inaltime);
+        desenGrafic(lungime / Sx, inaltime / Sy);
+        scalare(lungime / Sx, inaltime / Sy, Sx, Sy);
+    }
+}
+
+void desenGrafic(double lungime, double inaltime)
+{
+    punct mijloc;
+
+    mijloc.x=lungime/2;
+    mijloc.y=inaltime/2;
+
+    setlinestyle(0, 0, THICK_WIDTH);
+    line(mijloc.x, 0, mijloc.x, inaltime);
+    setlinestyle(0, 0, THICK_WIDTH);
+    line(0, mijloc.y, lungime, mijloc.y);
+
+    setlinestyle(3, 0, 1);
+    for(int i=lungime/10; i<=lungime; i+=(lungime/10))
+        line(i, 0, i, inaltime);
+    for(int i=inaltime/10; i<=inaltime; i+=(inaltime/10))
+    line(0, i, lungime, i);
+
+}
