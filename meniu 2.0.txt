@@ -1,0 +1,208 @@
+# Grafic
+void meniu(double lungime, double inaltime)
+{
+    bool limba=0;//verifica daca e deschis meniul de limbi
+    char limbaButon='R';//memoreaza limba selectata
+    bool esteApasat=0;//memoreaza dc este apasat butonul principal
+    POINT CursorPosition;
+    readimagefile("bckbround.jpg", 0, 0, 800, 600);
+    readimagefile("buton.jpg", 300, 150, 500, 225);
+    readimagefile("romania.jpg", 700, 15, 775, 50);
+    while(1)
+    {
+        GetCursorPos(&CursorPosition);
+        if(CursorPosition.x >=700&&CursorPosition.x<=775&&CursorPosition.y>=15&&CursorPosition.y<=50)//meniu de limbi
+            if(GetAsyncKeyState(VK_LBUTTON))
+            {
+                if(esteApasat==0)
+                {
+                    limba=1;
+                    readimagefile("buton.jpg", 300, 150, 500, 225);
+                    readimagefile("usa.jpg", 700, 65, 775, 100);
+                    readimagefile("germana.jpg", 700, 115, 775, 150);
+                    readimagefile("franceza.jpg", 700, 165, 775, 200);
+                }
+
+            }
+
+        if(esteApasat==0)
+        {
+            if(CursorPosition.x >=700&&CursorPosition.x<=775&&CursorPosition.y>=15&&CursorPosition.y<=50)
+                if(GetAsyncKeyState(VK_LBUTTON))
+                {
+                    readimagefile("buton.jpg", 300, 150, 500, 225);
+                    limbaButon='R';//romana
+                }
+            if(CursorPosition.x >=700&&CursorPosition.x<=775&&CursorPosition.y>=65&&CursorPosition.y<=100&& limba==1)//schimbarea limbii pt butoane
+                if(GetAsyncKeyState(VK_LBUTTON))
+                {
+                    readimagefile("butonen.jpg", 300, 150, 500, 225);
+                    limbaButon='E';//engleza
+                }
+            if(CursorPosition.x >=700&&CursorPosition.x<=775&&CursorPosition.y>=115&&CursorPosition.y<=150&& limba==1)
+                if(GetAsyncKeyState(VK_LBUTTON))
+                {
+                    readimagefile("butonde.jpg", 300, 150, 500, 225);
+                    limbaButon='D';//germana
+                }
+            if(CursorPosition.x >=700&&CursorPosition.x<=775&&CursorPosition.y>=165&&CursorPosition.y<=200&& limba==1)
+                if(GetAsyncKeyState(VK_LBUTTON))
+                {
+                    readimagefile("butonfr.jpg", 300, 150, 500, 225);
+                    limbaButon='F';//franceza
+                }
+            if(CursorPosition.x >=300&&CursorPosition.x<=500&&CursorPosition.y>=150&&CursorPosition.y<=225)//hover pt butoane
+            {
+                {
+                    if(limbaButon=='R')
+                        readimagefile("buton2.jpg", 300, 150, 500, 225);
+                    if(limbaButon=='E')
+                        readimagefile("butonen2.jpg", 300, 150, 500, 225);
+                    if(limbaButon=='D')
+                        readimagefile("butonde2.jpg", 300, 150, 500, 225);
+                    if(limbaButon=='F')
+                        readimagefile("butonfr2.jpg", 300, 150, 500, 225);
+                }
+            }
+            else//de-hover pt butoane
+            {
+                {
+                    if(limbaButon=='R')
+                        readimagefile("buton.jpg", 300, 150, 500, 225);
+                    if(limbaButon=='E')
+                        readimagefile("butonen.jpg", 300, 150, 500, 225);
+                    if(limbaButon=='D')
+                        readimagefile("butonde.jpg", 300, 150, 500, 225);
+                    if(limbaButon=='F')
+                        readimagefile("butonfr.jpg", 300, 150, 500, 225);
+                }
+            }
+        }
+        if(CursorPosition.x >=300&&CursorPosition.x<=500&&CursorPosition.y>=150&&CursorPosition.y<=225)
+            if(GetAsyncKeyState(VK_LBUTTON))//butonul care duce la grafic
+            {
+                esteApasat=1;
+                delay(500);
+                cleardevice();
+                desenInterfata(lungime, inaltime);
+            }
+
+    }
+}
+
+void citesteSir(char s[MAX],int x, int y)
+{
+    setbkcolor(WHITE);
+    strcpy(s,"");
+    char s1[MAX];
+    char t[2];
+    char tasta;
+    t[0]=tasta;
+    t[1]='\0';
+    strcat(s,t);
+    strcpy(s1,s);
+    strcat(s1,"_");
+    setcolor(BLACK);//
+    outtextxy(x,y,s1);
+    do
+    {
+        tasta=getch();
+        if (tasta==8) // backspace
+            if (strlen(s)>0)
+            {
+                setcolor(WHITE);
+                strcpy(s1,s);
+                strcat(s1,"_");
+                outtextxy(x,y,s1);
+                s[strlen(s)-1]='\0';
+                strcpy(s1,s);
+                strcat(s1,"_");
+                outtextxy(x,y,s1);
+                setcolor(BLACK);//
+                outtextxy(x,y,s1);
+            }
+            else
+                Beep(1000,100);
+        else
+        {
+            t[0]=tasta;
+            t[1]='\0';
+            strcat(s,t);
+            strcpy(s1,s);
+            strcat(s1,"_");
+            setcolor(BLACK);//
+            outtextxy(x,y,s1);
+        }
+    }
+    while (tasta!=13);
+    t[0]=tasta;
+    t[1]='\0';
+    strcat(s,t);
+    strcpy(s1,s);
+    strcat(s1,"_");
+    setcolor(BLACK);//
+    outtextxy(x,y,s1);
+
+}
+
+void desenInterfata(double lungime, double inaltime)
+{
+    POINT CursorPosition;
+    readimagefile("grid-01.jpg", 0, 0, 800, 600);
+    readimagefile("chenar-titlu-01.jpg", 0, 0, 800, 40);
+    readimagefile("functie-01.jpg", 320, 10, 390, 40);
+    citesteSir(f.s, 400, 15);
+    //desenGrafic(lungime, inaltime);
+
+    while(1)
+    {
+
+        GetCursorPos(&CursorPosition);
+        if(CursorPosition.x >=0&&CursorPosition.x<=200&&CursorPosition.y>=0&&CursorPosition.y<=39)
+            if(GetAsyncKeyState(VK_LBUTTON))
+                meniu(lungime, inaltime);
+
+    }
+    zoom(-1, -1, 800, 600);
+
+    //outtextxy(25, 25, f.s);
+}
+
+void zoom(double x1, double y1, double x2, double y2)
+{
+    while(1)
+    {
+        if(getch()=='q')
+        {
+            x1=x1*scale;
+            x2=x2*scale;
+            y1=y1*scale;
+            y2=y2*scale;
+            readimagefile("grid-01.jpg", x1, y1, x2, y2);
+            readimagefile("chenar-titlu-01.jpg", 0, 0, 800, 39);
+            //zoom(x1, y1, x2, y2);
+        }
+        if(getch()=='e')
+        {
+            x1=x1/scale;
+            x2=x2/scale;
+            y1=y1/scale;
+            y2=y2/scale;
+            readimagefile("grid-01.jpg", x1, y1, x2, y2);
+            readimagefile("chenar-titlu-01.jpg", 0, 0, 800, 39);
+            //zoom(x1, y1, x2, y2);
+        }
+    }
+
+}
+void CitireFunctie(char functie[MAX_LUNGIME])
+{
+    fin.getline(functie,MAX_LUNGIME);
+    printf("f(x) = ");
+    printf("%s\n",functie);
+}
+void CitireValoare(double &val)
+{
+    printf("Valoarea lui x = ");
+    cin>>val;
+}
