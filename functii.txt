@@ -1,0 +1,43 @@
+# Grafic
+if(tipElement=='F')
+        {
+            if(strcmp(elem->cuvant, "cos")==0)
+            {
+                elem->val=cos(val);
+                AdaugareStiva(termeni, elem);
+            }
+            if(strcmp(elem->cuvant, "sin")==0)
+            {
+                elem->val=sin(val);
+                AdaugareStiva(termeni, elem);
+            }
+            if(strcmp(elem->cuvant, "tan")==0)
+            {
+                elem->val=tan(val);
+                AdaugareStiva(termeni, elem);
+            }
+            if(strcmp(elem->cuvant, "ctg")==0)
+            {
+                int sinx, cosx;
+                sinx=sin(val);
+                cosx=cos(val);
+                elem->val=(cosx/sinx);
+                AdaugareStiva(termeni, elem);
+            }
+            if(strcmp(elem->cuvant, "ln")==0)
+            {
+                elem->val=log(val);
+                AdaugareStiva(termeni, elem);
+            }
+            if(strcmp(elem->cuvant, "log")==0)
+            {
+                elem->val=log2(val);
+                AdaugareStiva(termeni, elem);
+            }
+            if(strcmp(elem->cuvant, "sqrt")==0)
+            {
+                elem->val=sqrt(val);
+                AdaugareStiva(termeni, elem);
+            }
+
+        }
