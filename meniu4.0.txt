@@ -1,0 +1,360 @@
+#include <iostream>
+#include <fstream>
+#include <cstring>
+#include <cstdlib>
+#include <graphics.h>
+#include <cmath>
+#include <cstring>
+#include <stdio.h>
+#define MAX_LUNGIME 100
+#define MAX_CUVANT 10
+#define scale 1.01
+#include "eval.h"
+#include "functiiGrafice.h"
+using namespace std;
+
+ifstream fin("input.txt");
+ofstream fout("output.txt");
+
+char A[101], B[101];
+
+struct punct
+{
+    int x, y;
+};
+struct functie
+{
+    char s[101];
+
+} f;
+
+void CitireValoare(double &val);
+void CitireFunctie(char functie[MAX_LUNGIME]);
+void citesteSir(char s[MAX_LUNGIME],int x, int y);
+double Calculeaza(double val1,double val2,char operatie);
+void scalare(double lungime, double inaltime);
+void desenInterfata(double lungime, double intaltime,stiva expresie);
+void meniu(double lungime,double inaltime,stiva fct);
+void zoom(double x1, double y1, double x2, double y2);
+void informatii(double lungime, double inaltime, stiva expresie, char limbaButon);
+void inapoi(double lungime, double inaltime, stiva expresie);
+void interval(double lungime, double inaltime, stiva expresie);
+
+int main()
+{
+
+    double inaltime, lungime;
+    int x, y;
+    char functie[MAX_LUNGIME];
+    double val;
+
+    fin>>lungime;
+    fin>>inaltime;
+
+    stiva expresie;
+    InitializareStiva(expresie);
+
+    initwindow(800, 600);
+    meniu(lungime, inaltime,expresie);
+
+
+    getch();
+    closegraph();
+    return 0;
+}
+
+void meniu(double lungime, double inaltime,stiva expresie)
+{
+    bool limba=0;//verifica daca e deschis meniul de limbi
+    char limbaButon='R';//memoreaza limba selectata
+
+    readimagefile("bckbround.jpg", 0, 0, 800, 600);
+    readimagefile("buton.jpg", 300, 150, 500, 225);
+    readimagefile("romania.jpg", 700, 15, 775, 50);
+    readimagefile("informatii.jpg", 315, 245, 485, 310);
+    readimagefile("iesire.jpg", 315, 330, 485, 385);
+
+    bool gata=false;
+    int x,y;
+    do
+    {
+        if(ismouseclick(WM_LBUTTONDOWN))
+        {
+            clearmouseclick(WM_LBUTTONDOWN);
+            x=mousex();
+            y=mousey();
+
+            if(x>=315 && x<=485 && y>=330 && y<=385)
+            {
+                exit(0);
+                closegraph();
+            }
+            else if ((x>=300 && x<=500 && y>=150&&y<=225))
+            {
+                cleardevice();
+                desenInterfata(lungime, inaltime, expresie);
+                gata=true;
+            }
+            else if((x>=700 && x<=775 && y>=15&&y<=50))
+            {
+                readimagefile("buton.jpg", 300, 150, 500, 225);
+                readimagefile("usa.jpg", 700, 65, 775, 100);
+                readimagefile("germana.jpg", 700, 115, 775, 150);
+                readimagefile("franceza.jpg", 700, 165, 775, 200);
+                readimagefile("informatii.jpg", 315, 245, 485, 310);
+                readimagefile("iesire.jpg", 315, 330, 485, 385);
+                limba=1;
+                limbaButon='R';
+            }
+            else if(x>=315 && x<=485 && y>=245 && y<=310)
+            {
+                gata=true;
+                informatii(lungime, inaltime, expresie, limbaButon);
+            }
+            else if(limba=1)
+            {
+                if(x>=700 && x<=775 && y>=15&&y<=50)
+                {
+                    readimagefile("buton.jpg", 300, 150, 500, 225);
+                    readimagefile("informatii.jpg", 315, 245, 485, 310);
+                    readimagefile("iesire.jpg", 315, 330, 485, 385);
+                    limbaButon='R';
+                }
+                else if(x>=700 && x<=775 && y>=65&&y<=100)
+                {
+                    readimagefile("butonen.jpg", 300, 150, 500, 225);
+                    readimagefile("about.jpg", 315, 245, 485, 310);
+                    readimagefile("exit.jpg", 315, 330, 485, 385);
+                    limbaButon='E';
+                }
+                else if(x>=700 && x<=775 && y>=115&&y<=150)
+                {
+                    readimagefile("butonde.jpg", 300, 150, 500, 225);
+                    readimagefile("info.jpg", 315, 245, 485, 310);
+                    readimagefile("ausfahrt.jpg", 315, 330, 485, 385);
+                    limbaButon='D';
+                }
+                else if(x>=700 && x<=775 && y>=165&&y<=200)
+                {
+                    readimagefile("butonfr.jpg", 300, 150, 500, 225);
+                    readimagefile("apropos.jpg", 315, 245, 485, 310);
+                    readimagefile("sortie.jpg", 315, 330, 485, 385);
+                    limbaButon='F';
+                }
+            }
+
+        }
+    }
+    while (!gata);
+
+}
+
+void informatii(double lungime, double inaltime, stiva expresie, char limbaButon)
+{
+    if(limbaButon=='R')
+    {
+        cleardevice();
+        readimagefile("grid01.jpg", 0, 0, 800, 600);
+        readimagefile("chenar-titlu-01.jpg", 0, 0, 800, 40);
+        outtextxy(400, 300, "pagina_indisponibila");
+
+    }
+    if(limbaButon=='E')
+    {
+        cleardevice();
+        readimagefile("grid01.jpg", 0, 0, 800, 600);
+        readimagefile("chenar-titlu-01.jpg", 0, 0, 800, 40);
+        outtextxy(400, 300, "not_found");
+
+    }
+    if(limbaButon=='D')
+    {
+        cleardevice();
+        readimagefile("grid01.jpg", 0, 0, 800, 600);
+        readimagefile("chenar-titlu-01.jpg", 0, 0, 800, 40);
+        outtextxy(400, 300, "nicht gefunden");
+
+    }
+    if(limbaButon=='F')
+    {
+        cleardevice();
+        readimagefile("grid01.jpg", 0, 0, 800, 600);
+        readimagefile("chenar-titlu-01.jpg", 0, 0, 800, 40);
+        outtextxy(400, 300, "pas trouvé");
+
+    }
+    inapoi(lungime, inaltime, expresie);
+
+}
+
+void inapoi(double lungime, double inaltime, stiva expresie)
+{
+    bool gata=false;
+    int x,y;
+    do
+    {
+        if(ismouseclick(WM_LBUTTONDOWN))
+        {
+            clearmouseclick(WM_LBUTTONDOWN);
+            x=mousex();
+            y=mousey();
+            if ((x>=0 && x<=200 && y>=0&&y<=40))
+            {
+                gata=true;
+                meniu(lungime, inaltime, expresie);
+            }
+        }
+    }
+    while (!gata);
+}
+
+void citesteSir(char s[MAX_LUNGIME],int x, int y)
+{
+    setbkcolor(WHITE);
+    strcpy(s,"");
+    char s1[MAX_LUNGIME]={0};
+    char t[2];
+    char tasta;
+    t[0]=tasta;
+    t[1]='\0';
+
+    strcpy(t, "");
+    strcpy(s,t);
+    strcpy(s1,s);
+    strcat(s1,"_");
+    setcolor(BLACK);//
+    outtextxy(x,y,s1);
+    do
+    {
+        tasta=getch();
+        if (tasta==8) // backspace
+            if (strlen(s)>0)
+            {
+                setcolor(WHITE);
+                strcpy(s1,s);
+                strcat(s1,"_");
+                outtextxy(x,y,s1);
+                s[strlen(s)-1]='\0';
+                strcpy(s1,s);
+                strcat(s1,"_");
+                outtextxy(x,y,s1);
+                setcolor(BLACK);//
+                outtextxy(x,y,s1);
+            }
+            else
+                Beep(1000,100);
+        else
+        {
+            t[0]=tasta;
+            t[1]='\0';
+            strcat(s,t);
+            strcpy(s1,s);
+            strcat(s1,"_");
+            setcolor(BLACK);//
+            outtextxy(x,y,s1);
+        }
+    }
+    while (tasta!=13);
+    //t[0]=tasta;
+    //t[1]='\0';
+    strcpy(t, "");
+
+    strcat(s,t);
+    strcpy(s1,s);
+    //strcat(s1,"_");
+    setcolor(BLACK);//
+    s1[strlen(s1)-1]='\0';
+    outtextxy(x,y,s1);
+    strcpy(s, s1);
+
+}
+
+
+void desenInterfata(double lungime, double inaltime, stiva expresie)
+{
+    long a, b;
+    bool gata=false;
+    int x, y;
+
+    readimagefile("grid01.jpg", 0, 0, 800, 600);
+    readimagefile("chenar-titlu-01.jpg", 0, 0, 800, 40);
+    readimagefile("functie-01.jpg", 320, 10, 390, 40);
+    readimagefile("reload-01.jpg", 240, 10, 280, 30);
+
+    setbkcolor(WHITE);
+    setcolor(BLACK);
+    outtextxy(600, 15, "a=");
+    outtextxy(680, 15, "b=");
+
+    stiva S;
+    InitializareStiva(S);
+    InitializareStiva(expresie);
+
+    citesteSir(f.s, 400, 15);
+
+    citesteSir(A, 620, 15);
+    a=SirInNumar(A);
+    citesteSir(B, 700, 15);
+    b=SirInNumar(B);
+
+    SpatiereSir(f.s);
+    ExtragereCuvinte(f.s,S);
+
+    AflareExpresiePostfixata(S,expresie);
+
+    ReprezentareGrafic(expresie,a,b);
+    readimagefile("zoom.jpg", 695, 405, 775, 525);
+
+    do
+    {
+        if(ismouseclick(WM_LBUTTONDOWN))
+        {
+            clearmouseclick(WM_LBUTTONDOWN);
+            x=mousex();
+            y=mousey();
+            if ((x>=240 && x<=280 && y>=10 && y<=30))
+            {
+                gata=true;
+                esteBuna=true;
+
+            }
+            else if ((x>=0 && x<=200 && y>=0&&y<=40))
+            {
+                gata=true;
+                esteBuna=true;
+                meniu(lungime, inaltime, expresie);
+
+            }
+            else if ((x>=695 && x<=775 && y>=405&&y<=464))
+            {
+                a=a/1.2;
+                b=b/1.2;
+                if(a!=0 && b!=0)
+                {
+                    readimagefile("grid01.jpg", 0, 40, 800, 600);
+                    ReprezentareGrafic(expresie,a,b);
+                    readimagefile("zoom.jpg", 695, 405, 775, 525);
+                }
+            }
+            else if ((x>=695 && x<=775 && y>=465&&y<=525))
+            {
+                a=a*1.2;
+                b=b*1.2;
+                if(a<1000 && b<1000)
+                {
+                    readimagefile("grid01.jpg", 0, 40, 800, 600);
+                    ReprezentareGrafic(expresie,a,b);
+                    readimagefile("zoom.jpg", 695, 405, 775, 525);
+                }
+            }
+        }
+    }
+    while (!gata);
+    if(gata==true)
+    {
+        cleardevice();
+        desenInterfata(lungime, inaltime, expresie);
+    }
+
+
+}
