@@ -1,0 +1,420 @@
+#include <iostream>
+#include <fstream>
+#include <cstring>
+#include <cstdlib>
+#include <graphics.h>
+#include <cmath>
+#include <cstring>
+#include <stdio.h>
+#define MAX_LUNGIME 100
+#define MAX_CUVANT 10
+#define scale 1.5
+#include "eval.h"
+#include "functiiGrafice.h"
+using namespace std;
+
+char A[101], B[101];//capetele intervalelor
+char limbaButon='R';//memoreaza limba selectata
+char functie[MAX_LUNGIME];
+
+void CitireValoare(double &val);
+void CitireFunctie(char functie[MAX_LUNGIME]);
+void citesteSir(char s[MAX_LUNGIME],int x, int y);
+double Calculeaza(double val1,double val2,char operatie);
+void meniu(stiva expresie);
+void informatii(stiva expresie, char limbaButon);
+void desenInterfata(stiva expresie);
+void inapoi(stiva expresie);
+
+int main()
+{
+    stiva expresie;
+    InitializareStiva(expresie);
+
+    initwindow(800, 600);
+    meniu(expresie);
+
+    getch();
+    closegraph();
+    return 0;
+}
+
+void meniu(stiva expresie)
+{
+    bool limba=0;//verifica daca e deschis meniul de limbi
+    bool gata=false;
+    int x,y;
+    readimagefile("bckbround.jpg", 0, 0, 800, 600);
+
+    if(limbaButon=='R')//deschide meniul in functie de limba aleasa
+    {
+        readimagefile("buton.jpg", 300, 150, 500, 225);
+        readimagefile("romania.jpg", 700, 15, 775, 50);
+        readimagefile("informatii.jpg", 315, 245, 485, 310);
+        readimagefile("iesire.jpg", 315, 330, 485, 385);
+    }
+    else if(limbaButon=='E')
+    {
+        readimagefile("butonen.jpg", 300, 150, 500, 225);
+        readimagefile("romania.jpg", 700, 15, 775, 50);
+        readimagefile("about.jpg", 315, 245, 485, 310);
+        readimagefile("exit.jpg", 315, 330, 485, 385);
+    }
+    else if(limbaButon=='D')
+    {
+        readimagefile("butonde.jpg", 300, 150, 500, 225);
+        readimagefile("romania.jpg", 700, 15, 775, 50);
+        readimagefile("info.jpg", 315, 245, 485, 310);
+        readimagefile("ausfahrt.jpg", 315, 330, 485, 385);
+    }
+    else if(limbaButon=='F')
+    {
+        readimagefile("butonfr.jpg", 300, 150, 500, 225);
+        readimagefile("romania.jpg", 700, 15, 775, 50);
+        readimagefile("apropos.jpg", 315, 245, 485, 310);
+        readimagefile("sortie.jpg", 315, 330, 485, 385);
+    }
+
+    do
+    {
+        if(ismouseclick(WM_LBUTTONDOWN))
+        {
+            clearmouseclick(WM_LBUTTONDOWN);
+            x=mousex();
+            y=mousey();
+
+            if(x>=315 && x<=485 && y>=330 && y<=385)//butonul de IESIRE
+            {
+                exit(0);
+                closegraph();
+            }
+            else if ((x>=300 && x<=500 && y>=150&&y<=225))//butonul de CALCULATOR GRAFIC
+            {
+                cleardevice();
+                desenInterfata(expresie);
+                gata=true;
+            }
+            else if((x>=700 && x<=775 && y>=15&&y<=50))//deschidere meniu de limbi
+            {
+                readimagefile("buton.jpg", 300, 150, 500, 225);
+                readimagefile("usa.jpg", 700, 65, 775, 100);
+                readimagefile("germana.jpg", 700, 115, 775, 150);
+                readimagefile("franceza.jpg", 700, 165, 775, 200);
+                readimagefile("informatii.jpg", 315, 245, 485, 310);
+                readimagefile("iesire.jpg", 315, 330, 485, 385);
+                limba=1;
+                limbaButon='R';
+            }
+            else if(x>=315 && x<=485 && y>=245 && y<=310)//butonul de INFORMATII
+            {
+                gata=true;
+                informatii(expresie, limbaButon);
+            }
+            else if(limba=1)//verifica daca e deschis meniul de limbi si in caz ca da selecteaza limba
+            {
+                if(x>=700 && x<=775 && y>=15&&y<=50)
+                {
+                    readimagefile("buton.jpg", 300, 150, 500, 225);
+                    readimagefile("informatii.jpg", 315, 245, 485, 310);
+                    readimagefile("iesire.jpg", 315, 330, 485, 385);
+                    limbaButon='R';
+                }
+                else if(x>=700 && x<=775 && y>=65&&y<=100)
+                {
+                    readimagefile("butonen.jpg", 300, 150, 500, 225);
+                    readimagefile("about.jpg", 315, 245, 485, 310);
+                    readimagefile("exit.jpg", 315, 330, 485, 385);
+                    limbaButon='E';
+                }
+                else if(x>=700 && x<=775 && y>=115&&y<=150)
+                {
+                    readimagefile("butonde.jpg", 300, 150, 500, 225);
+                    readimagefile("info.jpg", 315, 245, 485, 310);
+                    readimagefile("ausfahrt.jpg", 315, 330, 485, 385);
+                    limbaButon='D';
+                }
+                else if(x>=700 && x<=775 && y>=165&&y<=200)
+                {
+                    readimagefile("butonfr.jpg", 300, 150, 500, 225);
+                    readimagefile("apropos.jpg", 315, 245, 485, 310);
+                    readimagefile("sortie.jpg", 315, 330, 485, 385);
+                    limbaButon='F';
+                }
+            }
+
+        }
+    }
+    while (!gata);
+
+}
+
+void informatii(stiva expresie, char limbaButon)
+{
+    if(limbaButon=='R')
+    {
+        cleardevice();
+        readimagefile("grid01.jpg", 0, 0, 800, 600);
+        readimagefile("chenar-titlu-01.jpg", 0, 0, 800, 40);
+        outtextxy(400, 300, "pagina_indisponibila");
+
+    }
+    if(limbaButon=='E')
+    {
+        cleardevice();
+        readimagefile("grid01.jpg", 0, 0, 800, 600);
+        readimagefile("chenar-titlu-01.jpg", 0, 0, 800, 40);
+        outtextxy(400, 300, "not_found");
+
+    }
+    if(limbaButon=='D')
+    {
+        cleardevice();
+        readimagefile("grid01.jpg", 0, 0, 800, 600);
+        readimagefile("chenar-titlu-01.jpg", 0, 0, 800, 40);
+        outtextxy(400, 300, "nicht gefunden");
+
+    }
+    if(limbaButon=='F')
+    {
+        cleardevice();
+        readimagefile("grid01.jpg", 0, 0, 800, 600);
+        readimagefile("chenar-titlu-01.jpg", 0, 0, 800, 40);
+        outtextxy(400, 300, "pas trouvé");
+
+    }
+    inapoi(expresie);
+
+}
+
+void inapoi(stiva expresie)
+{
+    bool gata=false;
+    int x,y;
+    do
+    {
+        if(ismouseclick(WM_LBUTTONDOWN))
+        {
+            clearmouseclick(WM_LBUTTONDOWN);
+            x=mousex();
+            y=mousey();
+            if ((x>=0 && x<=200 && y>=0&&y<=40))
+            {
+                gata=true;
+                meniu(expresie);
+            }
+        }
+    }
+    while (!gata);
+}
+
+void citesteSir(char s[MAX_LUNGIME],int x, int y)
+{
+    setbkcolor(WHITE);
+    strcpy(s,"");
+    char s1[MAX_LUNGIME]= {0};
+    char t[2];
+    char tasta;
+    t[0]=tasta;
+    t[1]='\0';
+
+    strcpy(t, "");
+    strcpy(s,t);
+    strcpy(s1,s);
+    strcat(s1,"_");
+    setcolor(BLACK);//
+    outtextxy(x,y,s1);
+    do
+    {
+        tasta=getch();
+        if (tasta==8) // backspace
+            if (strlen(s)>0)
+            {
+                setcolor(WHITE);
+                strcpy(s1,s);
+                strcat(s1,"_");
+                outtextxy(x,y,s1);
+                s[strlen(s)-1]='\0';
+                strcpy(s1,s);
+                strcat(s1,"_");
+                outtextxy(x,y,s1);
+                setcolor(BLACK);//
+                outtextxy(x,y,s1);
+            }
+            else
+                Beep(1000,100);
+        else
+        {
+            t[0]=tasta;
+            t[1]='\0';
+            strcat(s,t);
+            strcpy(s1,s);
+            strcat(s1,"_");
+            setcolor(BLACK);//
+            outtextxy(x,y,s1);
+        }
+    }
+    while (tasta!=13);
+    strcpy(t, "");
+    strcat(s,t);
+    strcpy(s1,s);
+
+    setcolor(BLACK);//
+    s1[strlen(s1)-1]='\0';
+    outtextxy(x,y,s1);
+    strcpy(s, s1);
+
+}
+
+void desenInterfata(stiva expresie)
+{
+    long a, b;
+    bool gata=false;
+    int x, y;
+
+    readimagefile("grid01.jpg", 0, 0, 800, 600);
+    readimagefile("chenar-titlu-01.jpg", 0, 0, 800, 40);
+    readimagefile("functie-01.jpg", 320, 10, 390, 40);
+
+    setbkcolor(WHITE);
+    setcolor(BLACK);
+
+    outtextxy(600, 15, "a=");
+    outtextxy(680, 15, "b=");
+
+    stiva S;
+    InitializareStiva(S);
+    InitializareStiva(expresie);
+
+    citesteSir(functie, 400, 15);
+
+    citesteSir(A, 620, 15);
+    a=SirInNumar(A);
+    citesteSir(B, 700, 15);
+    b=SirInNumar(B);
+
+    SpatiereSir(functie);
+    ExtragereCuvinte(functie,S);
+    AflareExpresiePostfixata(S,expresie);
+
+    if(a>=-1000 && a<=1000 && b>=-1000 && b<=1000 && a<b && a==-1*b)//verifica daca intervalul e introdus corect
+    {
+        ReprezentareGrafic(expresie,a,b);
+        readimagefile("zoom.jpg", 695, 405, 775, 525);
+        readimagefile("reload.jpg", 695, 525, 775, 585);
+
+        do
+        {
+            if(ismouseclick(WM_LBUTTONDOWN))
+            {
+                clearmouseclick(WM_LBUTTONDOWN);
+                x=mousex();
+                y=mousey();
+                if ((x>=695 && x<=775 && y>=525 && y<=585))//butonul de reload
+                {
+                    gata=true;
+                    esteBuna=true;
+                }
+                else if ((x>=0 && x<=200 && y>=0 && y<=40))//butonul GRAFIC.H (butonul de inapoi)
+                {
+                    gata=true;
+                    esteBuna=true;
+                    meniu(expresie);
+
+                }
+                else if ((x>=695 && x<=775 && y>=405 && y<=464))
+                {
+                    if(b>1)//butonul de zoom in
+                    {
+                        a=a/scale;
+                        b=b/scale;
+                        readimagefile("grid01.jpg", 0, 40, 800, 600);
+                        ReprezentareGrafic(expresie,a,b);
+                        readimagefile("zoom.jpg", 695, 405, 775, 525);
+                        readimagefile("reload.jpg", 695, 525, 775, 585);
+                    }
+
+                }
+                else if ((x>=695 && x<=775 && y>=465 && y<=525))
+                {
+                    if(b<=1)//cazul in care a sau b ajung 0
+                    {
+                        b=2;
+                        a=-2;
+                        readimagefile("grid01.jpg", 0, 40, 800, 600);
+                        ReprezentareGrafic(expresie,a,b);
+                        readimagefile("zoom.jpg", 695, 405, 775, 525);
+                        readimagefile("reload.jpg", 695, 525, 775, 585);
+                    }
+                    else if(b<=1000)//butonul de zoom out
+                    {
+                        a=a*scale;
+                        b=b*scale;
+                        readimagefile("grid01.jpg", 0, 40, 800, 600);
+                        ReprezentareGrafic(expresie,a,b);
+                        readimagefile("zoom.jpg", 695, 405, 775, 525);
+                        readimagefile("reload.jpg", 695, 525, 775, 585);
+                    }
+                }
+            }
+        }
+        while (!gata);
+        if(gata==true)
+        {
+            cleardevice();
+            desenInterfata(expresie);
+        }
+    }
+    else
+    {
+        settextstyle(0, 0, 3);
+        setcolor(RED);
+        if(limbaButon=='R')
+        {
+            outtextxy(75, 250, "INTERVALUL NU ESTE VALID:");
+            outtextxy(5, 275, "INTRODUCE-TI UN INTERVAL SIMETRIC");
+        }
+        else if(limbaButon=='E')
+        {
+            outtextxy(150, 250, "INVALID INTERVAL:");
+            outtextxy(80, 275, "ENTER A SYMMETRICAL INTERVAL");
+        }
+        else if(limbaButon=='D')
+        {
+            settextstyle(0, 0, 2);
+            outtextxy(150, 250, "INTERVALL IST NICHT GÜLTIG:");
+            outtextxy(80, 275, "EINGEBEN EINES SYMMETRISCHEN INTERVALLS");
+            settextstyle(0, 0, 3);
+        }
+        else if(limbaButon=='F')
+        {
+            outtextxy(75, 250, "L'INTERVALLE N'EST PAS VALIDE:");
+            outtextxy(5, 275, "ENTREZ UN INTERVALLE SYMÉTRIQUE");
+        }
+        setcolor(BLACK);
+        settextstyle(0, 0, 0);
+        readimagefile("reload.jpg", 695, 525, 775, 585);
+
+        do//refacerea interfatei pt cazul in care e gresit intervalul
+        {
+            if(ismouseclick(WM_LBUTTONDOWN))
+            {
+                clearmouseclick(WM_LBUTTONDOWN);
+                x=mousex();
+                y=mousey();
+                if(x>=695 && x<=775 && y>=525 && y<=585)//butonul de reload
+                {
+                    gata=true;
+                    desenInterfata(expresie);
+                }
+                else if ((x>=0 && x<=200 && y>=0&&y<=40))//butonul de inapoi
+                {
+                    gata=true;
+                    esteBuna=true;
+                    meniu(expresie);
+
+                }
+            }
+        }
+        while(!gata);
+    }
+}
